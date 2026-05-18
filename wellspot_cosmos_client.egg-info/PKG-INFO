@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: wellspot_cosmos_client
+Version: 0.1.0
+Summary: Read-only Cosmos Gremlin client for WellSpot
+Author: MUV
+License: Apache-2.0
+Project-URL: Repository, https://github.com/MUV/WellSpot
+Project-URL: Documentation, https://MUV.github.io/WellSpot
+Keywords: nbdev,jupyter,notebook,python,cosmos,gremlin
+Classifier: Natural Language :: English
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: azure-cosmos
+Requires-Dist: azure-identity
+Requires-Dist: azure-keyvault-secrets
+Requires-Dist: gremlinpython
+Requires-Dist: pandas
+Provides-Extra: dev
+Requires-Dist: nbdev; extra == "dev"
+
+# WellSpot Cosmos Client
+
+This repository now uses nbdev so the source of truth can stay in notebooks while the importable module remains in `wellspot_cosmos_client`.
+
+## Development Workflow
+
+- Edit `nbs/00_client.ipynb`
+- Export code with `nbdev_export`
+- Keep `Cosmos_Wellspot_Client.ipynb` as a manual smoke-test only
+
+## Hardcoded Inputs To Review
+
+These values were previously embedded in notebook cells and are now isolated so they can be replaced cleanly:
+
+- Key Vault URL passed to `SecretClientManager`
+- Secret names in `SecretNames`
+- Environment-to-container mapping created by the caller
+
+## Example
+
+```python
+from wellspot_cosmos_client import (
+    CosmosEnvironmentConfig,
+    CosmosGraphClient,
+    GremlinClientManager,
+    SecretClientManager,
+)
+
+environment = CosmosEnvironmentConfig(
+    database_name="<database-name>",
+    container_name="<container-name>",
+)
+
+secret_client_manager = SecretClientManager(
+    key_vault_url="https://<your-key-vault>.vault.azure.net/",
+)
+
+gremlin_manager = GremlinClientManager(
+    environment=environment,
+    secret_client_manager=secret_client_manager,
+)
+
+client = CosmosGraphClient(gremlin_manager)
+info = client.endpoints.get_info()
+```

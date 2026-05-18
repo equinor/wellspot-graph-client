@@ -1,0 +1,8 @@
+azure-cosmos
+azure-identity
+azure-keyvault-secrets
+gremlinpython
+pandas
+
+[dev]
+nbdev

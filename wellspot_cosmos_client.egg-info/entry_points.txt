@@ -1,0 +1,2 @@
+[nbdev]
+wellspot_cosmos_client = wellspot_cosmos_client._modidx:d
