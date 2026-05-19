@@ -13,8 +13,10 @@ This repository now uses nbdev so the source of truth can stay in notebooks whil
 These values were previously embedded in notebook cells and are now isolated so they can be replaced cleanly:
 
 - Key Vault URL passed to `SecretClientManager`
-- Secret names in `SecretNames`
+- Secret names in `SecretNames` for the Gremlin and Cosmos endpoints
 - Environment-to-container mapping created by the caller
+
+Authentication for Key Vault, Gremlin, and Cosmos uses `DefaultAzureCredential`, so the caller should provide a managed identity or other supported Azure identity in the execution environment.
 
 ## Example
 

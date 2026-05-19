@@ -11,7 +11,7 @@ from typing import Any, Optional, Tuple
 
 import pandas as pd
 from azure.cosmos import CosmosClient
-from azure.identity import ClientSecretCredential, DefaultAzureCredential
+from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 from gremlin_python.driver.client import Client
 from gremlin_python.driver.serializer import GraphSONSerializersV2d0
@@ -24,9 +24,6 @@ __all__ = ['SecretNames', 'CosmosEnvironmentConfig', 'SecretClientManager', 'Gre
 class SecretNames:
     """Centralized secret names used by the read-only client."""
 
-    tenant_id: str = "AZURE-TENANT-ID"
-    client_id: str = "GRAPH-CLIENT-ID"
-    client_secret: str = "GRAPH-CLIENT-SECRET"
     gremlin_url: str = "GREMLIN-URL"
     cosmos_url: str = "COSMOS-URL"
 
@@ -76,11 +73,7 @@ class GremlinClientManager:
         self.environment = environment
         self.secret_client_manager = secret_client_manager
         self.secret_names = secret_names or SecretNames()
-        self.credential = ClientSecretCredential(
-            self.secret_client_manager.get_secret_value(self.secret_names.tenant_id),
-            self.secret_client_manager.get_secret_value(self.secret_names.client_id),
-            self.secret_client_manager.get_secret_value(self.secret_names.client_secret),
-        )
+        self.credential = self.secret_client_manager.get_credential()
         self.token: str | None = None
         self.token_expiration = 0.0
         self.gremlin_endpoint = self.secret_client_manager.get_secret_value(self.secret_names.gremlin_url)
